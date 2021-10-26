@@ -22,52 +22,55 @@ if not _OPTIONS["linux_backend"] then
    _OPTIONS["linux_backend"] = "gtk3"
 end
 
-workspace "NativeFileDialog"
-  -- these dir specifications assume the generated files have been moved
-  -- into a subdirectory.  ex: $root/build/makefile
-  local root_dir = path.join(path.getdirectory(_SCRIPT),"../../")
-  local build_dir = path.join(root_dir,"build/")
-  configurations { "Release", "Debug" }
+local root_dir = path.join(path.getdirectory(_SCRIPT),"../../nativefiledialog")
+print(root_dir)
+local build_dir = path.join(root_dir,"build/")
 
-  -- Apple stopped distributing an x86 toolchain.  Xcode 11 now fails to build with an 
-  -- error if the invalid architecture is present.
-  --
-  -- Add it back in here to build for legacy systems.
-  filter "system:macosx"
-    platforms {"x64"}
-  filter "system:windows or system:linux"
-    platforms {"x64", "x86"}
+-- workspace "NativeFileDialog"
+--   -- these dir specifications assume the generated files have been moved
+--   -- into a subdirectory.  ex: $root/build/makefile
+ 
+--   configurations { "Release", "Debug" }
+
+--   -- Apple stopped distributing an x86 toolchain.  Xcode 11 now fails to build with an 
+--   -- error if the invalid architecture is present.
+--   --
+--   -- Add it back in here to build for legacy systems.
+--   filter "system:macosx"
+--     platforms {"x64"}
+--   filter "system:windows or system:linux"
+--     platforms {"x64", "x86"}
   
 
-  objdir(path.join(build_dir, "obj/"))
+--   objdir(path.join(build_dir, "obj/"))
 
-  -- architecture filters
-  filter "configurations:x86"
-    architecture "x86"
+--   -- architecture filters
+--   filter "configurations:x86"
+--     architecture "x86"
   
-  filter "configurations:x64"
-    architecture "x86_64"
+--   filter "configurations:x64"
+--     architecture "x86_64"
 
-  -- debug/release filters
-  filter "configurations:Debug"
-    defines {"DEBUG"}
-    symbols "On"
-    targetsuffix "_d"
+--   -- debug/release filters
+--   filter "configurations:Debug"
+--     defines {"DEBUG"}
+--     symbols "On"
+--     targetsuffix "_d"
 
-  filter "configurations:Release"
-    defines {"NDEBUG"}
-    optimize "On"
+--   filter "configurations:Release"
+--     defines {"NDEBUG"}
+--     optimize "On"
 
   project "nfd"
     kind "StaticLib"
 
     -- common files
-    files {root_dir.."src/*.h",
-           root_dir.."src/include/*.h",
-           root_dir.."src/nfd_common.c",
+    files {root_dir.."/src/*.h",
+           root_dir.."/src/include/*.h",
+           root_dir.."/src/nfd_common.c",
     }
 
-    includedirs {root_dir.."src/include/"}
+    includedirs {root_dir.."/src/include/"}
     targetdir(build_dir.."/lib/%{cfg.buildcfg}/%{cfg.platform}")
 
     warnings "extra"
@@ -75,24 +78,24 @@ workspace "NativeFileDialog"
     -- system build filters
     filter "system:windows"
       language "C++"
-      files {root_dir.."src/nfd_win.cpp"}
+      files {root_dir.."/src/nfd_win.cpp"}
 
     filter {"action:gmake or action:xcode4"}
       buildoptions {"-fno-exceptions"}
 
     filter "system:macosx"
       language "C"
-      files {root_dir.."src/nfd_cocoa.m"}
+      files {root_dir.."/src/nfd_cocoa.m"}
 
 
 
     filter {"system:linux", "options:linux_backend=gtk3"}
       language "C"
-      files {root_dir.."src/nfd_gtk.c"}
+      files {root_dir.."/src/nfd_gtk.c"}
       buildoptions {"`pkg-config --cflags gtk+-3.0`"}
     filter {"system:linux", "options:linux_backend=zenity"}
       language "C"
-      files {root_dir.."src/nfd_zenity.c"}
+      files {root_dir.."/src/nfd_zenity.c"}
 
 
     -- visual studio filters
@@ -148,10 +151,10 @@ local make_test = function(name)
 
 end
 
-make_test("test_pickfolder")
-make_test("test_opendialog")
-make_test("test_opendialogmultiple")
-make_test("test_savedialog")
+--make_test("test_pickfolder")
+--make_test("test_opendialog")
+--make_test("test_opendialogmultiple")
+--make_test("test_savedialog")
 
 newaction
 {
