@@ -77,6 +77,7 @@ local build_dir = path.join(root_dir,"build/")
 
     -- system build filters
     filter "system:windows"
+      staticruntime "On"
       language "C++"
       files {root_dir.."/src/nfd_win.cpp"}
 
@@ -100,7 +101,19 @@ local build_dir = path.join(root_dir,"build/")
 
     -- visual studio filters
     filter "action:vs*"
-      defines { "_CRT_SECURE_NO_WARNINGS" }      
+      defines { "_CRT_SECURE_NO_WARNINGS" }     
+      
+    filter "configurations:Debug"
+      runtime "Debug"
+      symbols "On"
+    
+    filter "configurations:Release"
+      runtime "Release"
+      optimize "On"
+  
+    filter "configurations:MinSizeRelease"
+      runtime "Release"
+      optimize "On"
 
 local make_test = function(name)
   project(name)
